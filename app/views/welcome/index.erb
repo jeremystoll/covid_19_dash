@@ -13,10 +13,13 @@
 
 		</div>
 	</h1>
+
 	<h2 style="color:#dc3545; font-size: 40px;">
 		5-Day Totals for the U.S.
 	</h2>
-
+	<h5 style="color:#dc3545; font-style:italic;">
+		Source: Data from Johns Hopkins, via API at https://api.covid19api.com
+	</h5>
 	<img source="https://img.etimg.com/thumb/width-640,height-480,imgsize-133827,resizemode-1,msid-74668965/avoid-discretionary-travel-eating-out-donald-trump-says-coronavirus-crisis-could-stretch-up-to-august.jpg" />
 
 
@@ -96,10 +99,10 @@
 			var numPrefix = "";
 			var styleCol = "";
 			if (diffMath > 0){
-				styleCol = "green"
+				styleCol = "red"
 				numPrefix = "+"
 			} else {
-				styleCol = "red"
+				styleCol = "green"
 				numPrefix = ""
 			}
 
@@ -117,23 +120,9 @@
 		var month = d.getMonth();
 		var day = d.getDate();
 		var hours = d.getHours();
-		document.getElementById("headerText").innerHTML = "Quarantine Day # " + diffDays;
+		document.getElementById("headerText").innerHTML = "Quarantine Day # " + diffDays + "<h5 style='color:#dc3545; font-style:italic;'>(Based on a March 16th start)</h5>";
 
 		  var covid_us_api_url = 'https://api.covid19api.com/total/dayone/country/united-states'
-		  var detrumpify_api_url = 'https://toolsofourtools.org/detrumpify2/v2/dirty.json'
-
-		  	$.ajax({
-		        url: detrumpify_api_url,
-		        contentType: "application/json",
-		        dataType: 'json',
-		        success: function(result){
-		            // console.log(result);
-		            var allNames = result[result.length-1]
-		            
-		            document.getElementById("trumpName").innerHTML = formatDateString(dayOneResults.Date)
-		        }
-		    })
-
 
 		    $.ajax({
 		        url: covid_us_api_url,

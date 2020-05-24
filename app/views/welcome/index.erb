@@ -1,0 +1,185 @@
+<!-- Use this to run on http://localhost:5000, commit and push: -->
+<!-- cd jruby-getting-started -->
+<!-- heroku local web -f Procfile.windows -->
+<!-- git add . -->
+<!-- git commit -m "COMMIT MSG" -->
+<!-- heroku push master -->
+
+<html>
+	<body style="background-color: black; text-align: center;">
+
+	<h1 style="color:#dc3545; font-size: 90px; margin-bottom: 60px;">
+		<div id="headerText">
+
+		</div>
+	</h1>
+	<h2 style="color:#dc3545; font-size: 40px;">
+		5-Day Totals for the U.S.
+	</h2>
+
+	<img source="https://img.etimg.com/thumb/width-640,height-480,imgsize-133827,resizemode-1,msid-74668965/avoid-discretionary-travel-eating-out-donald-trump-says-coronavirus-crisis-could-stretch-up-to-august.jpg" />
+
+
+	<center style="padding: 30px 0px;">
+	<div class="table-responsive-md col-8">
+		<table class="table table-hover table-dark">
+			<thead>
+			    <tr>
+			      <th scope="col">Date</th>
+			      <th scope="col">Active</th>
+			      <th scope="col">Confirmed</th>
+			      <th scope="col">Recovered</th>
+			      <th scope="col">Deaths</th>
+			    </tr>
+			</thead>
+			<tbody>
+			    <tr>
+			      <td id="fiveDayOneDate"></td>
+			      <td id="fiveDayOneActive"></td>
+			      <td id="fiveDayOneConfirmed"></td>
+			      <td id="fiveDayOneRecovered"></td>
+			      <td id="fiveDayOneDeaths"></td>
+			    </tr>
+
+			    <tr>
+			      <td id="fiveDayTwoDate"></td>
+			      <td id="fiveDayTwoActive"></td>
+			      <td id="fiveDayTwoConfirmed"></td>
+			      <td id="fiveDayTwoRecovered"></td>
+			      <td id="fiveDayTwoDeaths"></td>
+			    </tr>
+
+			    <tr>
+			      <td id="fiveDayThreeDate"></td>
+			      <td id="fiveDayThreeActive"></td>
+			      <td id="fiveDayThreeConfirmed"></td>
+			      <td id="fiveDayThreeRecovered"></td>
+			      <td id="fiveDayThreeDeaths"></td>
+			    </tr>
+
+			    <tr>
+			      <td id="fiveDayFourDate"></td>
+			      <td id="fiveDayFourActive"></td>
+			      <td id="fiveDayFourConfirmed"></td>
+			      <td id="fiveDayFourRecovered"></td>
+			      <td id="fiveDayFourDeaths"></td>
+			    </tr>
+
+			    <tr>
+			      <td id="fiveDayFiveDate"></td>
+			      <td id="fiveDayFiveActive"></td>
+			      <td id="fiveDayFiveConfirmed"></td>
+			      <td id="fiveDayFiveRecovered"></td>
+			      <td id="fiveDayFiveDeaths"></td>
+			    </tr>
+			</tbody>
+		</table>
+	</div>
+
+	<a type="button" class="btn btn-outline-danger" href="https://gisanddata.maps.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6" style="color:lightgrey;">
+		Details
+	</a>
+
+</center>
+	<script type="text/javascript" id="">
+		
+		function commaIze(number) {
+  			return number.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");         
+		}
+
+		function formatDateString(dateStr) {
+			return dateStr.slice(0,10);
+		}
+
+		function formatDiffString(oldNum,newNum) {
+			var diffMath = newNum - oldNum;
+			var numPrefix = "";
+			var styleCol = "";
+			if (diffMath > 0){
+				styleCol = "green"
+				numPrefix = "+"
+			} else {
+				styleCol = "red"
+				numPrefix = ""
+			}
+
+			diffString = "<div style='color:" + styleCol + ";'>" + numPrefix + commaIze(diffMath.toString()) + "</div>"
+			return diffString;
+		}
+
+		var oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
+		var todayDate = new Date();
+		var quarDate = new Date(2020, 2, 16);
+		var diffDayCalc = Math.round((todayDate.getTime() - quarDate.getTime()) / oneDay);
+		var diffDays = diffDayCalc.toFixed(0);
+
+		var d = new Date();
+		var month = d.getMonth();
+		var day = d.getDate();
+		var hours = d.getHours();
+		document.getElementById("headerText").innerHTML = "Quarantine Day # " + diffDays;
+
+		  var covid_us_api_url = 'https://api.covid19api.com/total/dayone/country/united-states'
+		  var detrumpify_api_url = 'https://toolsofourtools.org/detrumpify2/v2/dirty.json'
+
+		  	$.ajax({
+		        url: detrumpify_api_url,
+		        contentType: "application/json",
+		        dataType: 'json',
+		        success: function(result){
+		            // console.log(result);
+		            var allNames = result[result.length-1]
+		            
+		            document.getElementById("trumpName").innerHTML = formatDateString(dayOneResults.Date)
+		        }
+		    })
+
+
+		    $.ajax({
+		        url: covid_us_api_url,
+		        contentType: "application/json",
+		        dataType: 'json',
+		        success: function(result){
+		            // console.log(result);
+		            var dayOneResults = result[result.length-1]
+		            var dayTwoResults = result[result.length-2]
+		            var dayThreeResults = result[result.length-3]
+		            var dayFourResults = result[result.length-4]
+		            var dayFiveResults = result[result.length-5]
+
+		            document.getElementById("fiveDayOneDate").innerHTML = formatDateString(dayOneResults.Date)
+		            document.getElementById("fiveDayOneActive").innerHTML = commaIze(dayOneResults.Active) + " " +formatDiffString(dayTwoResults.Active,dayOneResults.Active)
+		            document.getElementById("fiveDayOneConfirmed").innerHTML = commaIze(dayOneResults.Confirmed) + " " +formatDiffString(dayTwoResults.Confirmed,dayOneResults.Confirmed)
+		            document.getElementById("fiveDayOneRecovered").innerHTML = commaIze(dayOneResults.Recovered) + " " +formatDiffString(dayTwoResults.Recovered,dayOneResults.Recovered)
+		            document.getElementById("fiveDayOneDeaths").innerHTML = commaIze(dayOneResults.Deaths) + " " +formatDiffString(dayTwoResults.Deaths,dayOneResults.Deaths)
+
+		            document.getElementById("fiveDayTwoDate").innerHTML = formatDateString(dayTwoResults.Date)
+		            document.getElementById("fiveDayTwoActive").innerHTML = commaIze(dayTwoResults.Active) + " " +formatDiffString(dayThreeResults.Active,dayTwoResults.Active)
+		            document.getElementById("fiveDayTwoConfirmed").innerHTML = commaIze(dayTwoResults.Confirmed) + " " +formatDiffString(dayThreeResults.Confirmed,dayTwoResults.Confirmed)
+		            document.getElementById("fiveDayTwoRecovered").innerHTML = commaIze(dayTwoResults.Recovered) + " " +formatDiffString(dayThreeResults.Recovered,dayTwoResults.Recovered)
+		            document.getElementById("fiveDayTwoDeaths").innerHTML = commaIze(dayTwoResults.Deaths) + " " +formatDiffString(dayThreeResults.Deaths,dayTwoResults.Deaths)
+
+		            document.getElementById("fiveDayThreeDate").innerHTML = formatDateString(dayThreeResults.Date)
+		            document.getElementById("fiveDayThreeActive").innerHTML = commaIze(dayThreeResults.Active) + " " + formatDiffString(dayFourResults.Active,dayThreeResults.Active)
+		            document.getElementById("fiveDayThreeConfirmed").innerHTML = commaIze(dayThreeResults.Confirmed) + " " + formatDiffString(dayFourResults.Confirmed,dayThreeResults.Confirmed)
+		            document.getElementById("fiveDayThreeRecovered").innerHTML = commaIze(dayThreeResults.Recovered) + " " + formatDiffString(dayFourResults.Recovered,dayThreeResults.Recovered)
+		            document.getElementById("fiveDayThreeDeaths").innerHTML = commaIze(dayThreeResults.Deaths) + " " + formatDiffString(dayFourResults.Deaths,dayThreeResults.Deaths)
+
+		            document.getElementById("fiveDayFourDate").innerHTML = formatDateString(dayFourResults.Date)
+		            document.getElementById("fiveDayFourActive").innerHTML = commaIze(dayFourResults.Active) + " " + formatDiffString(dayFiveResults.Active,dayFourResults.Active)
+		            document.getElementById("fiveDayFourConfirmed").innerHTML = commaIze(dayFourResults.Confirmed) + " " + formatDiffString(dayFiveResults.Confirmed,dayFourResults.Confirmed)
+		            document.getElementById("fiveDayFourRecovered").innerHTML = commaIze(dayFourResults.Recovered) + " " + formatDiffString(dayFiveResults.Recovered,dayFourResults.Recovered)
+		            document.getElementById("fiveDayFourDeaths").innerHTML = commaIze(dayFourResults.Deaths) + " " + formatDiffString(dayFiveResults.Deaths,dayFourResults.Deaths)
+
+		            document.getElementById("fiveDayFiveDate").innerHTML = formatDateString(dayFiveResults.Date)
+		            document.getElementById("fiveDayFiveActive").innerHTML = commaIze(dayFiveResults.Active)
+		            document.getElementById("fiveDayFiveConfirmed").innerHTML = commaIze(dayFiveResults.Confirmed)
+		            document.getElementById("fiveDayFiveRecovered").innerHTML = commaIze(dayFiveResults.Recovered)
+		            document.getElementById("fiveDayFiveDeaths").innerHTML = commaIze(dayFiveResults.Deaths)
+
+		        }
+		    })
+		 	
+	</script>
+</body>
+</html>
